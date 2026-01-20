@@ -83,28 +83,50 @@ n/a
 ---
 
 ## Question 4: Your First Batch Job (Slurm)
-1. **Files Provided:** [List your .sh, .py, and output.txt files included in zip]
-2. **Job ID & Stats:** `[Paste output of sacct command]`
-3. **Submission Problem:** [Describe error and diagnosis]
-4. **Verification:** [Proof that script ran successfully]
-5. **Login vs Batch:** [Explain the difference]
-6. **Why Clusters?:** 
+1. **Files Provided:** slurm.sh, mlops_assignment1.out
+2. **Job ID & Stats:** ```
+   (.venv) scur2308@int6:~/UvA-mlops/assignment1$ sacct -j 18489843 --format=JobID,Start,End,Elapsed,State
+   JobID                      Start                 End    Elapsed      State 
+   ------------ ------------------- ------------------- ---------- ---------- 
+   18489843     2026-01-20T11:30:05 2026-01-20T11:30:13   00:00:08  COMPLETED 
+   18489843.ba+ 2026-01-20T11:30:05 2026-01-20T11:30:13   00:00:08  COMPLETED 
+   18489843.ex+ 2026-01-20T11:30:05 2026-01-20T11:30:13   00:00:08  COMPLETED
+   ```
+3. **Submission Problem:** n/a
+4. **Verification:** see output in mlops_assignment1.out
+5. **Login vs Batch:** Running on login node uses shared resources, batch job resources are specifically allocated to you
+6. **Why Clusters?:** To run many jobs at one time, to have access to increased compute
 ---
 
 ## Question 5: Reflection & Conceptual Understanding
 1. **The Filesystem:**
-   - **I/O Performance:** [Why 100k small files are bad]
-   - **Mitigation Strategies:** [Strategy 1] and [Strategy 2]
-   - **Dataset Versioning:** [How to handle GB/PB datasets]
-2. **Reproducibility:** [3 specific causes of different results + MLOps fixes]
-3. **Conda vs venv vs uv:** [Pros/Cons of each for Snellius]
+   - **I/O Performance:** Snellius makes use of distributed file system for storage so across many small 100k files it would need to do many metadata lookups whereas 1 big file requires only 1 metadata lookup.
+   - **Mitigation Strategies:** combine files into one larger file, or use local filesystem of node
+   - **Dataset Versioning:** We could version control datasets by storing patches for versions, and applying them in memory
+2. **Reproducibility:**
+   1. randomness may introduce different results between runs, resolved by setting set seed
+   2. speed at which files are read may differ between runs, fixed by using generator to determine which worker provides next file
+   3. may be differences in library version, hardcode the library versions
+3. **Conda vs venv vs uv:** conda makes many small files, bad for i/o performance, uv is quick and has a pip-like interface, uv does however save its own python executable, venv is an official tool of the python foundation and uses familiar commands, venv is also easily automated with scripts
 
 ---
 
 ## Question 6: Package Integrity
-1. **ModuleNotFoundError:** [Describe any PYTHONPATH or __init__.py issues]
-2. **Import Abstraction:** [Why import from ml_core.data vs ml_core.data.pcam?]
-3. **Pytest Result:** `[Paste output of pytest tests/test_imports.py]`
+1. **ModuleNotFoundError:** forgot to install workspace dependencies, resolved by installing workspace dependencies
+2. **Import Abstraction:** importing from ml_core.data ensures public api access and avoids importing private APIs
+3. **Pytest Result:** 
+   ```
+   =================================================================== test session starts ====================================================================
+   platform linux -- Python 3.13.1, pytest-8.3.5, pluggy-1.5.0
+   rootdir: /gpfs/home6/scur2308/UvA-mlops
+   configfile: pyproject.toml
+   plugins: xdist-3.6.1
+   collected 1 item                                                                                                                                           
+
+   tests/test_imports.py .                                                                                                                              [100%]
+
+   ==================================================================== 1 passed in 13.30s ====================================================================
+   ```
 
 ---
 
@@ -140,8 +162,8 @@ n/a
 ---
 
 ## Final Submission Checklist
-- [ ] Folder contains .md file and assets/ folder?
-- [ ] Name and Student ID on page 1?
-- [ ] All code/terminal snippets are in backtick blocks?
-- [ ] All images use relative paths (e.g., assets/pcam.png)?
-- [ ] Slurm .sh and .out files included in the .zip?
+- [x] Folder contains .md file and assets/ folder?
+- [x] Name and Student ID on page 1?
+- [x] All code/terminal snippets are in backtick blocks?
+- [x] All images use relative paths (e.g., assets/pcam.png)?
+- [x] Slurm .sh and .out files included in the .zip?
