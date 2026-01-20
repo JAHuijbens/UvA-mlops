@@ -78,7 +78,7 @@ n/a
    ```
    - **Important items to include:** credentials, temporary files, build results, logs etc
    - **README info:** should not include snellius access info, should include how to load dependencies
-4. **Git Log:** `[Paste output of git log --oneline]`
+4. **Git Log:** `839bb48 (HEAD -> main, origin/main) ass1 commit`
 
 ---
 
